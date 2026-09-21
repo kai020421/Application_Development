@@ -1,4 +1,5 @@
-//PART A
+//PART A & PART B
+
 import 'package:flutter/material.dart'; // for material design widgets
 import 'package:project/CA_Assignment1/post.dart'; // for the User model
 

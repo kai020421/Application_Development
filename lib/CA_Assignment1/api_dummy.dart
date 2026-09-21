@@ -1,4 +1,5 @@
 //PART A
+/*
 import 'package:flutter/material.dart';
 import 'package:project/CA_Assignment1/screen.dart'; // user ki detail screen ke liye
 import 'posts_api.dart';// api se data fetch karne ke liye
@@ -156,6 +157,194 @@ class _PostsPageState extends State<PostsPage> with SingleTickerProviderStateMix
           },
         );
       },
+    );
+  }
+}
+*/
+
+//PART B
+
+import 'package:flutter/material.dart';
+import 'post.dart';
+import 'posts_api.dart';
+import 'post_card.dart';
+import 'screen.dart';
+
+class PostsPage extends StatefulWidget {
+  const PostsPage({super.key});
+
+  @override
+  State<PostsPage> createState() => _PostsPageState();
+}
+
+class _PostsPageState extends State<PostsPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+
+  List<User> _allUsers = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() => setState(() {}));
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+      });
+    });
+    _loadUsers();
+  }
+
+  Future<void> _loadUsers() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final response = await UserApi().fetchUsers();
+      setState(() {
+        _allUsers = response;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  List<User> _getFilteredUsers({required bool favoritesOnly}) {
+    return _allUsers.where((user) {
+      final matchesTab = favoritesOnly ? user.isFavorite : true;
+      final matchesSearch = user.name.toLowerCase().contains(_searchQuery);
+      return matchesTab && matchesSearch;
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Student Directory'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'All Users'),
+            Tab(text: 'Favorites'),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search students...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: _buildBody(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    
+    if (_errorMessage != null) { //error state update load false aur error msg show
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Colors.red), 
+              const SizedBox(height: 12),
+              Text(
+                _errorMessage!, // error msg show
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon( // retry button jo error main aaye aur refresh jarsakt
+                onPressed: _loadUsers,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    final isFavoritesTab = _tabController.index == 1;
+    final displayedUsers = _getFilteredUsers(favoritesOnly: isFavoritesTab);
+
+    if (displayedUsers.isEmpty) { // agar user list empty ho tou empty state show
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.person_off, size: 48, color: Colors.grey),
+            const SizedBox(height: 8),
+            Text(
+              isFavoritesTab ? 'No favorites added yet' : 'No users found',
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator( // refresh jo pull karke hota usse data feload
+      onRefresh: _loadUsers,
+      child: ListView.builder(
+        itemCount: displayedUsers.length,
+        itemBuilder: (context, index) {
+          final user = displayedUsers[index];
+          return UserCard(
+            user: user,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserDetailScreen(user: user),
+                ),
+              );
+            },
+            onFavoriteToggle: () { //fav click karke fav toggle karsakte
+              setState(() {
+                user.isFavorite = !user.isFavorite;
+              });
+            },
+          );
+        },
+      ),
     );
   }
 }

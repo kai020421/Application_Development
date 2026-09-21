@@ -1,4 +1,4 @@
-//PART A
+//PART A & PART B
 import 'package:flutter/material.dart';
 import 'post.dart';
 
@@ -57,7 +57,7 @@ class UserDetailScreen extends StatelessWidget { // stateless widget jo user det
             ),
             ListTile(
               leading: const Icon(Icons.location_on),
-              title: Text(user.address.fullAddress),
+              title: Text('${user.address.street}, ${user.address.city}'),
             ),
             ListTile(
               leading: const Icon(Icons.business),
@@ -68,4 +68,4 @@ class UserDetailScreen extends StatelessWidget { // stateless widget jo user det
       ),
     );
   }
-}
+} 
