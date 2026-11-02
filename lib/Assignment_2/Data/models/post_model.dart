@@ -1,6 +1,5 @@
-import '../../entities/post.dart';
-
-class PostModel extends Post {
+import '../../Domain/entities/post.dart';
+class PostModel extends Post{
   const PostModel({
     required super.id,
     required super.userId,
@@ -15,14 +14,4 @@ class PostModel extends Post {
       title: json['title'] as String,
       body: json['body'] as String,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'userId': userId,
-      'title': title,
-      'body': body,
-    };
-  }
-}
+  }}

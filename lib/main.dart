@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'api_dummy.dart';
+
+import 'Assignment_2/injector.dart'; 
+import 'Assignment_2/Presentation/pages/posts_page.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -11,13 +13,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Assignment 2',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        colorSchemeSeed: const Color(0xFF2F6F5E),
+        scaffoldBackgroundColor: const Color(0xFFF6F8F7),
       ),
-      home: const PostsPage(),
+      home: PostsPage(getPosts: buildGetPosts()),
     );
   }
 }

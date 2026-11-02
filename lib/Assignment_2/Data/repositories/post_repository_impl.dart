@@ -1,5 +1,5 @@
-import '../../entities/post.dart';
-import '../../repositories/post_repository.dart';
+import '../../Domain/entities/post.dart';
+import '../../Domain/repositories/post_repository.dart';
 import '../datasources/post_remote_datasource.dart';
 
 class PostRepositoryImpl implements PostRepository {
