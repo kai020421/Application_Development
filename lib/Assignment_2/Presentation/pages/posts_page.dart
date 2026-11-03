@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../Domain/use_cases/get_posts.dart';
+import '../../Domain/entities/post.dart';
 import '../bloc/post_bloc.dart';
 import '../bloc/post_event.dart';
 import '../bloc/post_state.dart';
 import '../widgets/post_card.dart';
-import '../widgets/post_detailsheet.dart';
 
 const _accent = Color(0xFF2F6F5E);
 const _accentDeep = Color(0xFF1C4A3D);
 
-/// The posts feature's entry point. Takes the [GetPosts] use case rather
-/// than constructing one itself, so whoever wires up the feature (main.dart,
-/// or a test) decides what PostBloc is actually backed by.
 class PostsPage extends StatelessWidget {
   const PostsPage({super.key, required this.getPosts});
 
@@ -43,8 +40,6 @@ class PostsPage extends StatelessWidget {
                         color: _accent,
                         onRefresh: () async {
                           context.read<PostBloc>().add(LoadPostsEvent());
-                          // Let the BLoC finish loading so the pull indicator
-                          // doesn't snap back before new data arrives.
                           await context
                               .read<PostBloc>()
                               .stream
@@ -57,7 +52,15 @@ class PostsPage extends StatelessWidget {
                           itemBuilder: (context, index) => PostCard(
                             post: posts[index],
                             index: index,
-                            onTap: () => showPostDetailSheet(context, posts[index]),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PostDetailPage(post: posts[index]),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -69,8 +72,9 @@ class PostsPage extends StatelessWidget {
                             context.read<PostBloc>().add(LoadPostsEvent()),
                       ),
                     ),
-                  // TODO: Handle this case.
-                  PostState() => throw UnimplementedError(),
+                  PostState() => const SliverFillRemaining(
+                      child: SizedBox.shrink(),
+                    ),
                 },
               ],
             );
@@ -81,8 +85,57 @@ class PostsPage extends StatelessWidget {
   }
 }
 
-/// A gradient, pinned app bar with a live post count underneath the title —
-/// the count stays blank until the first load finishes.
+/// A dedicated separate screen to show the full post title and body.
+class PostDetailPage extends StatelessWidget {
+  const PostDetailPage({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F8F7),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: _accentDeep,
+        title: Text(
+          'Post #${post.id}',
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w800),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              post.title,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1C4A3D),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Divider(color: Color(0xFFD1DCD8)),
+            const SizedBox(height: 16),
+            Text(
+              post.body,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xFF6B7A76),
+                height: 1.6,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PostsAppBar extends StatelessWidget {
   const _PostsAppBar({required this.count});
 

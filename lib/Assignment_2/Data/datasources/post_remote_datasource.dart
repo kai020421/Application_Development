@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/post_model.dart';
 
-abstract class PostRemoteDataSource {
+abstract class PostRemoteDataSource { 
   Future<List<PostModel>> getPosts();
 }
 
