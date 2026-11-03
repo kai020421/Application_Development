@@ -4,9 +4,9 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure([super.message = 'server error occurred. please try again.']);
+  const ServerFailure([super.message = 'server error occurred. please try again.']); //jab server fail ho
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure([super.message = 'no internet connection. please check your network.']);
+  const NetworkFailure([super.message = 'no internet connection. please check your network.']); //jab mertwork fail ho widi nahi araha
 }

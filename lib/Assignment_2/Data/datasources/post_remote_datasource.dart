@@ -6,10 +6,10 @@ abstract class PostRemoteDataSource {
   Future<List<PostModel>> getPosts();
 }
 
-class PostRemoteDataSourceImpl implements PostRemoteDataSource {
+class PostRemoteDataSourceImpl implements PostRemoteDataSource { //class implemnting posremote datasource jo ke basically client ko use kar ke data fetch karega
   final http.Client client;
 
-  PostRemoteDataSourceImpl({required this.client});
+  PostRemoteDataSourceImpl({required this.client}); //initializing the client in constructor
 
   @override
   Future<List<PostModel>> getPosts() async {

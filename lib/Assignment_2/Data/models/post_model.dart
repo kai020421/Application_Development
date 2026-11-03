@@ -7,7 +7,7 @@ class PostModel extends Post{
     required super.body,
   });
 
-  factory PostModel.fromJson(Map<String, dynamic> json) {
+  factory PostModel.fromJson(Map<String, dynamic> json) { //json convertor of the required field of sata
     return PostModel(
       id: json['id'] as int,
       userId: json['userId'] as int,
