@@ -38,6 +38,8 @@ dependencies:
   flutter_test:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  equatable: ^3.0.0
+  
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
-
-import 'Assignment_2/injector.dart'; 
-import 'Assignment_2/Presentation/pages/posts_page.dart'; 
-
-void main() {
-  runApp(const MyApp());
-}
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project/bloc/api_service.dart';
+import 'package:project/bloc/favourites_cubit.dart';
+import 'package:project/bloc/product_bloc.dart';
+import 'package:project/bloc/product_event.dart';
+import 'package:project/bloc/splash_screen.dart';
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Assignment 2',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color(0xFF2F6F5E),
-        scaffoldBackgroundColor: const Color(0xFFF6F8F7),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProductBloc(ApiService())..add(LoadProducts()),
+        ),
+        BlocProvider(
+          create: (context) => FavouritesCubit(),
+        ),
+      ],
+      child: const MaterialApp(
+        home: SplashScreen(),
       ),
-      home: PostsPage(getPosts: buildGetPosts()),
     );
   }
 }
