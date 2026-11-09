@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project/bloc/api_service.dart';
-import 'package:project/bloc/favourites_cubit.dart';
-import 'package:project/bloc/product_bloc.dart';
-import 'package:project/bloc/product_event.dart';
-import 'package:project/bloc/splash_screen.dart';
-void main() => runApp(const MyApp());
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'lost_found/presentation/pages/lostfound_list.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ProductBloc(ApiService())..add(LoadProducts()),
-        ),
-        BlocProvider(
-          create: (context) => FavouritesCubit(),
-        ),
-      ],
-      child: const MaterialApp(
-        home: SplashScreen(),
+    return MaterialApp(
+      title: 'IBA Lost & Found',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
       ),
+      home: const LostFoundListPage(),
     );
   }
 }
