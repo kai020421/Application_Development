@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'IBA Lost & Found',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorSchemeSeed: const Color.fromARGB(255, 134, 170, 200),
         useMaterial3: true,
       ),
       home: const LostFoundListPage(),

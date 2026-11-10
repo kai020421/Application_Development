@@ -3,13 +3,13 @@ import '../models/item_model.dart';
 
 class LostFoundRepository {
   final CollectionReference _itemsCollection =
-      FirebaseFirestore.instance.collection('items');
+      FirebaseFirestore.instance.collection('items'); //item link karta hai firebase se
 
   // Stream for real-time reads
   Stream<List<ItemModel>> getItemsStream() {
     return _itemsCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return ItemModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        return ItemModel.fromMap(doc.data() as Map<String, dynamic>, doc.id); //firebase data map item model
       }).toList();
     });
   }
@@ -24,18 +24,18 @@ class LostFoundRepository {
     await _itemsCollection.doc(id).delete();
   }
 
-  // Race-safe Transaction-based update for "Mark as Claimed"
+  //mark as claimed transaction
   Future<void> markAsClaimed(String itemId) async {
     DocumentReference docRef = _itemsCollection.doc(itemId);
 
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
+    await FirebaseFirestore.instance.runTransaction((transaction) async { 
       DocumentSnapshot snapshot = await transaction.get(docRef);
 
       if (!snapshot.exists) {
         throw Exception("Item does not exist!");
       }
 
-      transaction.update(docRef, {'status': 'Claimed'});
+      transaction.update(docRef, {'status': 'Claimed'}); //update to claimed
     });
   }
 }

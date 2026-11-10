@@ -5,7 +5,7 @@ import '../../models/item_model.dart';
 
 class ItemDetailPage extends StatelessWidget {
   final String itemId;
-  const ItemDetailPage({Key? key, required this.itemId}) : super(key: key);
+  const ItemDetailPage({Key? key, required this.itemId}) : super(key: key); //item id ko constructor ke through pass kar rahe hain
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +16,10 @@ class ItemDetailPage extends StatelessWidget {
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('items').doc(itemId).snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) { //ye besically loading state ko handle karta hai jab tak data load nahi hota
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData || !snapshot.data!.exists) {
+          if (!snapshot.hasData || !snapshot.data!.exists) { //basically deal s wih itwm dleete n not dfound
             return const Center(child: Text('Item not found or deleted.'));
           }
 

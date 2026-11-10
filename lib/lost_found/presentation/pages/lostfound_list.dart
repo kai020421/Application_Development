@@ -12,7 +12,7 @@ class LostFoundListPage extends StatefulWidget {
   State<LostFoundListPage> createState() => _LostFoundListPageState();
 }
 
-class _LostFoundListPageState extends State<LostFoundListPage> {
+class _LostFoundListPageState extends State<LostFoundListPage> { //lfilter creates and search functionality for lost and found items
   final LostFoundRepository _repository = LostFoundRepository();
   String _searchQuery = '';
   String _selectedStatusFilter = 'All';
