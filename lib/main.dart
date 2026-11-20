@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/riverpod/splash_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project/bloc/api_service.dart';
+import 'package:project/bloc/favourites_cubit.dart';
+import 'package:project/bloc/product_bloc.dart';
+import 'package:project/bloc/product_event.dart';
+import 'package:project/bloc/splash_screen.dart';
 
-void main() {
- runApp(
- const ProviderScope(
- child: MyApp(),
- ),
- );
-}
+void main() => runApp(const MyApp());
+
 class MyApp extends StatelessWidget {
- const MyApp({super.key});
- @override
- Widget build(BuildContext context) {
- return MaterialApp(
- debugShowCheckedModeBanner: false,
- home: const SplashScreen(),
- );
- }
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ProductBloc(ApiService())..add(LoadProducts()),
+        ),
+        BlocProvider(create: (_) => FavouritesCubit()),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(),
+      ),
+    );
+  }
 }
